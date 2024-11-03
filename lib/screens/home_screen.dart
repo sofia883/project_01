@@ -10,7 +10,6 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   final Color _primaryColor = Color(0xFFFFD700);
   String? _selectedCategory;
-  bool _isDropdownOpen = false; // Added this state variable
 
   @override
   Widget build(BuildContext context) {
@@ -21,146 +20,125 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text('Marketplace'),
         backgroundColor: _primaryColor,
       ),
-      body: GestureDetector(
-        onTap: () {
-          // Close dropdown when tapping outside
-          if (_isDropdownOpen) {
-            setState(() {
-              _isDropdownOpen = false;
-            });
-          }
-        },
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Categories',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Handle showing all items
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    child: Text(
-                      'All Items',
-                      style: TextStyle(color: Colors.black87),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 16),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey[300]!),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: _selectedCategory,
-                    hint: Text('Select Category'),
-                    isExpanded: true,
-                    icon: Icon(
-                        _isDropdownOpen
-                            ? Icons.keyboard_arrow_up
-                            : Icons.keyboard_arrow_down,
-                        color: _primaryColor),
-                    onTap: () {
-                      setState(() {
-                        _isDropdownOpen = !_isDropdownOpen;
-                      });
-                    },
-                    items: CategoryUtils.categories.map((category) {
-                      return DropdownMenuItem<String>(
-                        value: category.name,
-                        child: Row(
-                          children: [
-                            Icon(
-                              category.icon ?? Icons.category,
-                              color: _primaryColor,
-                              size: 24,
-                            ),
-                            SizedBox(width: 12),
-                            Text(category.name ?? 'Category'),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedCategory = newValue;
-                        _isDropdownOpen = false;
-                      });
-                    },
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Categories',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-              SizedBox(height: 16),
-              Container(
-                height: 200,
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4,
-                    childAspectRatio: 0.8,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                  ),
-                  itemCount: displayedCategories.length,
-                  itemBuilder: (context, index) {
-                    final category = displayedCategories[index];
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 4,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            category.icon ?? Icons.category,
-                            size: 32,
-                            color: _primaryColor,
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            category.name ?? 'Category',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    );
+                ElevatedButton(
+                  onPressed: () {
+                    // Handle showing all items
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: Text(
+                    'All Items',
+                    style: TextStyle(color: Colors.black87),
+                  ),
                 ),
+              ],
+            ),
+            SizedBox(height: 16),
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey[300]!),
+                borderRadius: BorderRadius.circular(12),
               ),
-            ],
-          ),
+              child: DropdownButton<String>(
+                value: _selectedCategory,
+                hint: Text('Select Category'),
+                isExpanded: true,
+                icon: Icon(Icons.keyboard_arrow_down, color: _primaryColor),
+                underline: SizedBox(), // Remove the default underline
+                items: CategoryUtils.categories.map((category) {
+                  return DropdownMenuItem<String>(
+                    value: category.name,
+                    child: Row(
+                      children: [
+                        Icon(
+                          category.icon ?? Icons.category,
+                          color: _primaryColor,
+                          size: 24,
+                        ),
+                        SizedBox(width: 12),
+                        Text(category.name ?? 'Category'),
+                      ],
+                    ),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedCategory = newValue;
+                  });
+                },
+              ),
+            ),
+            SizedBox(height: 16),
+            Container(
+              height: 200,
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  childAspectRatio: 0.8,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                ),
+                itemCount: displayedCategories.length,
+                itemBuilder: (context, index) {
+                  final category = displayedCategories[index];
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          category.icon ?? Icons.category,
+                          size: 32,
+                          color: _primaryColor,
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          category.name ?? 'Category',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: Container(
